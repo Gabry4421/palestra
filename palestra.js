@@ -4,7 +4,7 @@ const exercisesData = {
     {name: "Panca piana bilanciere", series: 3, reps: "8-12", tempo: "2-1-3", rest: 90},
     {name: "Panca inclinata manubri", series: 3, reps: "8-12", tempo: "2-1-3", rest: 90},
     {name: "Croci su panca", series: 2, reps: "10-12", tempo: "2-1-3", rest: 60},
-    {name: "Close Grip Press bilanciere", series: 3, reps: "8-10", tempo: "2-1-3", rest: 90},
+    {name: "Panca manubri presa neutra", series: 3, reps: "8-10", tempo: "2-1-3", rest: 90},
     {name: "French press manubri", series: 2, reps: "10-12", tempo: "2-1-3", rest: 60},
     {name: "Estensioni sopra testa manubri", series: 2, reps: "10-12", tempo: "2-1-3", rest: 60}
   ],
