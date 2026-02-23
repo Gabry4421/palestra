@@ -4,7 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Scheda Allenamento + Miniplayer</title>
-<link rel="stylesheet" href="palestra.css?v=2"> <!-- versioning CSS -->
+
+<!-- CSS con versioning automatico -->
+<script>
+  const cssVersion = new Date().getTime();
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = `palestra.css?v=${cssVersion}`;
+  document.head.appendChild(link);
+</script>
 </head>
 <body>
 
@@ -77,6 +85,13 @@
     </div>
 </div>
 
-<script src="palestra.js?v=3"></script> <!-- versioning JS -->
+<!-- JS con versioning automatico -->
+<script>
+  const jsVersion = new Date().getTime();
+  const script = document.createElement('script');
+  script.src = `palestra.js?v=${jsVersion}`;
+  document.body.appendChild(script);
+</script>
+
 </body>
-        </html>
+</html>
