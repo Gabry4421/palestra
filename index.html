@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scheda Allenamento + Miniplayer</title>
+<link rel="stylesheet" href="palestra.css">
+</head>
+<body>
+
+<header>
+    <h1>Scheda Allenamento Casa</h1>
+    <p class="subtitle">Seleziona un giorno per iniziare</p>
+</header>
+
+<section id="daysSection" class="active">
+    <div class="days-grid">
+        <div class="day-card" data-day="1">
+            <h2>Giorno 1</h2>
+            <p class="muscles">Petto / Tricipiti</p>
+            <p class="day-name">Lunedì</p>
+        </div>
+        <div class="day-card" data-day="2">
+            <h2>Giorno 2</h2>
+            <p class="muscles">Schiena / Bicipiti</p>
+            <p class="day-name">Martedì</p>
+        </div>
+        <div class="day-card" data-day="3">
+            <h2>Giorno 3</h2>
+            <p class="muscles">Gambe / Glutei</p>
+            <p class="day-name">Mercoledì</p>
+        </div>
+        <div class="day-card" data-day="4">
+            <h2>Giorno 4</h2>
+            <p class="muscles">Spalle / Addominali</p>
+            <p class="day-name">Giovedì</p>
+        </div>
+        <div class="day-card" data-day="5">
+            <h2>Giorno 5</h2>
+            <p class="muscles">Full Body / Superset</p>
+            <p class="day-name">Venerdì</p>
+        </div>
+    </div>
+</section>
+
+<section id="exercisesSection">
+    <button class="back-btn" id="backBtn">← Torna ai Giorni</button>
+    <h2 id="dayTitle">Giorno X</h2>
+    <div class="exercise-list" id="exerciseList"></div>
+</section>
+
+<!-- --- MINI PLAYER SEMPRE VISIBILE --- -->
+<div id="miniPlayerContainer">
+    <h4>Cerca una canzone o playlist</h4>
+    <input type="text" id="ytSearchInput" placeholder="Scrivi qui...">
+    <button id="ytSearchBtn">Cerca</button>
+
+    <div id="dropdowns">
+        <select id="songsDropdown"><option value="">-- Canzoni --</option></select>
+        <select id="playlistsDropdown"><option value="">-- Playlist --</option></select>
+    </div>
+
+    <div id="ytPlayer"></div>
+    <button id="toggleMiniBtn">MiniPlayer</button>
+    <div id="miniControls" style="display:none;">
+        <button id="prevBtn">⏮</button>
+        <button id="playPauseBtn">⏸</button>
+        <button id="nextBtn">⏭</button>
+    </div>
+
+    <!-- Link Clash Royale sotto -->
+    <div id="miniInfo">
+        <a href="https://play.google.com/store/apps/details?id=com.supercell.clashroyale" target="_blank">
+            <img id="miniInfoImg" src="https://www.pngplay.com/wp-content/uploads/10/Clash-Royale-Logo-PNG-HD-Photos.png" alt="Clash Royale">
+            <span>Apri Clash Royale</span>
+        </a>
+    </div>
+</div>
+
+<script src="palestra.js"></script>
+</body>
+</html>

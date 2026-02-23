@@ -1,0 +1,484 @@
+/* --- RESET E BODY --- */
+body {  
+    margin: 0;  
+    padding: 0;  
+    font-family: 'Inter', Arial, sans-serif;  
+    background-color: #000;   
+    color: #fff;  
+}  
+
+/* --- HEADER --- */
+header {  
+    background-color: #000;   
+    text-align: center;  
+    padding: 35px 20px;  
+    border-bottom: 2px solid #ff8c00;  
+}  
+header h1 {  
+    margin: 0;  
+    font-size: 3em;  
+    color: #fff;  
+    letter-spacing: 1px;  
+}  
+header .subtitle {  
+    margin-top: 8px;  
+    font-size: 1.2em;  
+    color: #aaa;   
+}  
+
+/* --- GRID GIORNI --- */
+.days-grid {  
+    display: grid;  
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));  
+    gap: 30px;  
+    max-width: 1000px;  
+    margin: 40px auto;  
+    padding: 0 20px;  
+}  
+.day-card {  
+    background-color: #111;  
+    border-radius: 25px;  
+    padding: 35px 20px;  
+    text-align: center;  
+    cursor: pointer;  
+    box-shadow: 0 8px 20px rgba(255,140,0,0.4);  
+    transition: transform 0.3s, box-shadow 0.3s;  
+    border: 2px solid #ff8c00;   
+}  
+.day-card h2 {  
+    font-size: 2em;  
+    margin-bottom: 10px;  
+    color: #fff;  
+}  
+.day-card p.muscles {  
+    font-size: 1.2em;  
+    color: #8a2be2;   
+    font-weight: bold;  
+}  
+.day-card:hover {  
+    transform: scale(1.08) translateY(-5px);  
+    box-shadow: 0 15px 30px rgba(255,140,0,0.6);  
+}  
+
+/* --- SEZIONI --- */
+#daysSection, #exercisesSection {  
+    display: none;  
+}  
+#daysSection.active, #exercisesSection.active {  
+    display: block;  
+}  
+
+/* --- TITOLI --- */
+#dayTitle {  
+    text-align: center;  
+    color: #8a2be2;   
+    font-size: 2.5em;  
+    margin-top: 20px;  
+    font-weight: bold;  
+}  
+
+/* --- LISTA ESERCIZI --- */
+.exercise-list {  
+    max-width: 800px;  
+    margin: 40px auto;  
+    padding: 20px 10px;  
+    animation: fadeIn 0.5s ease-in-out;  
+}  
+.exercise {  
+    background-color: #111;  
+    margin: 20px 0;  
+    padding: 25px;  
+    border-radius: 18px;  
+    border: 2px solid #ff8c00;   
+    transition: transform 0.3s, border-color 0.3s;  
+}  
+.exercise:hover {  
+    transform: translateY(-5px);  
+    border-color: #ffa500;  
+}  
+.exercise h3 {  
+    margin: 0 0 15px 0;  
+    font-size: 1.3em;  
+    color: #fff;  
+}  
+
+/* --- SERIE CONTAINER --- */
+.series-container {  
+    display: flex;  
+    flex-direction: column;   
+    gap: 12px;  
+    margin-top: 10px;  
+}  
+.series-container > div {  
+    display: flex;  
+    justify-content: flex-start;  
+    align-items: center;  
+    gap: 10px;  
+}  
+
+/* --- PULSANTI SERIE --- */
+.series-btn {  
+    flex: none;   
+    width: 100px;  
+    padding: 12px 0;  
+    background-color: #ff8c00;   
+    color: #000;  
+    border: none;  
+    border-radius: 12px;  
+    cursor: pointer;  
+    font-weight: bold;  
+    transition: background 0.3s, transform 0.3s;  
+}  
+.series-btn:hover:not(.disabled) {  
+    background-color: #ffa500;  
+    transform: scale(1.05);  
+}  
+.series-btn.disabled {  
+    background-color: #222;  
+    cursor: not-allowed;  
+}  
+
+/* --- INPUT KG --- */
+.kg-input {  
+    width: 60px;  
+    text-align: center;  
+    border-radius: 8px;  
+    border: 1px solid #444;  
+    background: rgba(0,0,0,0.3);  
+    color: #8a2be2;   
+    font-weight: bold;  
+}  
+.kg-input:focus {  
+    outline: none;  
+    background: rgba(0,0,0,0.6);  
+    transform: scale(1.05);  
+}  
+.kg-label {  
+    color: #8a2be2;   
+    font-weight: bold;  
+    margin-left: 5px;  
+}  
+
+/* --- TIMER --- */
+.timer {  
+    text-align: center;  
+    margin-top: 12px;  
+    font-size: 1.15em;  
+    color: #ff8c00;  
+}  
+
+/* --- BOTTONE SALTA RECUPERO --- */
+.skip-btn {  
+    margin-left: 15px;  
+    padding: 6px 12px;  
+    background-color: #ffa500;   
+    color: #000;  
+    border: none;  
+    border-radius: 8px;  
+    cursor: pointer;  
+    font-weight: bold;  
+    transition: background 0.2s, transform 0.2s;  
+}  
+.skip-btn:hover {  
+    background-color: #ff8c00;  
+    transform: scale(1.05);  
+}  
+
+/* --- BACK BUTTON --- */
+.back-btn {  
+    display: block;  
+    margin: 25px auto;  
+    padding: 14px 30px;  
+    background-color: #ff8c00;  
+    border: none;  
+    border-radius: 12px;  
+    cursor: pointer;  
+    font-weight: bold;  
+    color: #000;  
+    font-size: 1em;  
+    transition: transform 0.3s, box-shadow 0.3s;  
+}  
+.back-btn:hover {  
+    transform: scale(1.05);  
+    box-shadow: 0 8px 20px rgba(255,140,0,0.6);  
+}  
+
+/* --- ANIMAZIONI --- */
+@keyframes fadeIn {  
+    from {opacity:0; transform: translateY(20px);}  
+    to {opacity:1; transform: translateY(0);}  
+}  
+
+/* --- MINIPLAYER YOUTUBE --- */
+#miniPlayerContainer {  
+    background-color: #111;  
+    border-radius: 15px;  
+    padding: 20px;  
+    width: 360px;  
+    max-width: 95%;  
+    text-align: center;  
+    box-shadow: 0 8px 20px rgba(255,140,0,0.4);  
+    margin: 40px auto;  
+    overflow: hidden;  
+    position: relative;  
+}  
+#miniPlayerContainer input {  
+    width: 70%;  
+    padding: 8px 12px;  
+    border-radius: 8px;  
+    border: none;  
+    margin-bottom: 10px;  
+}  
+#miniPlayerContainer button {  
+    padding: 6px 12px;  
+    border-radius: 8px;  
+    border: none;  
+    cursor: pointer;  
+    background-color: #ff8c00;  
+    font-weight: bold;  
+    margin-left: 5px;  
+    transition: 0.3s;  
+}  
+#miniPlayerContainer button:hover {  
+    background-color: #ffa500;  
+}  
+#dropdowns {  
+    display: flex;  
+    flex-direction: column;  
+    gap: 10px;  
+    margin-top: 10px;  
+}  
+#dropdowns select {  
+    width: 100%;  
+    padding: 6px 10px;  
+    border-radius: 8px;  
+    border: none;  
+    background-color: #222;  
+    color: #fff;  
+    cursor: pointer;  
+    max-width: 100%;  
+}  
+#ytPlayer {  
+    margin-top: 15px;  
+    border-radius: 12px;  
+    overflow: hidden;  
+}  
+#miniControls {  
+    display: flex;  
+    justify-content: center;  
+    gap: 15px;  
+    margin-top: 10px;  
+}  
+.mini {  
+    position: fixed;  
+    bottom: 0;  
+    left: 0;  
+    width: 100%;  
+    border-radius: 0;  
+    padding: 10px;  
+    z-index: 999;  
+    box-shadow: 0 -2px 20px rgba(255,140,0,0.6);  
+}  
+.mini #ytPlayer {  
+    display: none;  
+}  
+h4 {  
+    margin: 10px 0 5px 0;  
+    font-weight: bold;  
+    color: #8a2be2;  
+}
+/* Controlli miniPlayer centrati e più grandi quando MiniPlayer ridotto */
+.mini #miniControls {
+    display: flex !important;      /* sempre visibili */
+    justify-content: center;        /* centrati orizzontalmente */
+    gap: 20px;                      /* spazio tra i pulsanti */
+    position: fixed;                /* fissi sullo schermo */
+    bottom: 15px;                   /* distanza dal bordo inferiore */
+    left: 50%;                      /* centro orizzontale */
+    transform: translateX(-50%);    /* centraggio preciso */
+    z-index: 1000;                  /* sopra tutto */
+}
+
+.mini #miniControls button {
+    padding: 12px 18px;             /* pulsanti più grandi */
+    font-size: 1.1em;               /* testo leggermente più grande */
+}
+/* MiniPlayer fisso quando ridotto */
+.mini {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    border-radius: 0;
+    z-index: 9999;
+}
+
+/* Controlli centrati */
+.mini #miniControls {
+    display: flex !important;
+    justify-content: center;
+    gap: 20px;
+    position: fixed;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;
+}
+
+.mini #miniControls button {
+    padding: 14px 22px;
+    font-size: 1.2em;
+}
+/* Giorno della settimana sotto il muscolo */
+.weekday {
+    color: #8a2be2; /* stesso viola dei muscoli */
+    font-weight: bold;
+    margin-top: 5px;
+    font-size: 1em; /* puoi aumentare se vuoi leggermente più grande */
+}
+body {  
+    margin: 0;  
+    padding: 0;  
+    font-family: 'Inter', Arial, sans-serif;  
+    background-color: #000;   
+    color: #fff;  
+}
+
+/* HEADER */  
+header {  
+    background-color: #000;   
+    text-align: center;  
+    padding: 35px 20px;  
+    border-bottom: 2px solid #ff8c00;  
+}  
+header h1 {  
+    margin: 0;  
+    font-size: 3em;  
+    color: #fff;  
+    letter-spacing: 1px;  
+}  
+header .subtitle {  
+    margin-top: 8px;  
+    font-size: 1.2em;  
+    color: #aaa;   
+}
+
+/* GRID GIORNI */  
+.days-grid {  
+    display: grid;  
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));  
+    gap: 30px;  
+    max-width: 1000px;  
+    margin: 40px auto;  
+    padding: 0 20px;  
+}  
+.day-card {  
+    background-color: #111;  
+    border-radius: 25px;  
+    padding: 35px 20px;  
+    text-align: center;  
+    cursor: pointer;  
+    box-shadow: 0 8px 20px rgba(255,140,0,0.4);  
+    transition: transform 0.3s, box-shadow 0.3s;  
+    border: 2px solid #ff8c00;   
+}  
+.day-card h2 {  
+    font-size: 2em;  
+    margin-bottom: 10px;  
+    color: #fff;  
+}  
+.day-card p.muscles {  
+    font-size: 1.2em;  
+    color: #8a2be2; /* viola */  
+    font-weight: bold;  
+}  
+.day-card p.day-name {
+    font-size: 1em;
+    color: #aaa;
+    margin-top: 5px;
+}
+.day-card:hover {  
+    transform: scale(1.08) translateY(-5px);  
+    box-shadow: 0 15px 30px rgba(255,140,0,0.6);  
+}  
+
+/* SEZIONI */  
+#daysSection, #exercisesSection {  
+    display: none;  
+}  
+#daysSection.active, #exercisesSection.active {  
+    display: block;  
+}  
+
+/* Miniplayer */ 
+#miniPlayerContainer {
+    margin: 20px auto;
+    text-align: center;
+    background-color: #111;
+    padding: 20px;
+    border-radius: 18px;
+    border: 2px solid #ff8c00;
+}
+
+/* Link Clash Royale sempre visibile */
+#miniInfo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+#miniInfo a {
+    text-decoration: none;
+    color: #8a2be2; /* viola */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#miniInfoImg {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+#miniInfo span {
+    font-weight: bold;
+    font-size: 1em;
+}
+/* --- MINI INFO CLASH ROYALE --- */
+#miniInfo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50px; /* più spazio sotto mini player */
+    margin-bottom: 0px; /* spazio inferiore */
+}
+
+#miniInfo a {
+    text-decoration: none;
+    color: #8a2be2; /* viola */
+    display: flex;
+    align-items: center;
+    gap: 15px; /* distanza tra immagine e testo */
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+#miniInfoImg {
+    width: 80px;   /* più grande */
+    height: 80px;  /* più grande */
+    border-radius: 12px;
+    object-fit: cover;
+}
+#miniPlayerContainer {
+    max-width: 600px;      /* Limita la larghezza massima */
+    width: 90%;             /* Occupa il 90% dello schermo, si adatta */
+    margin: 40px auto 20px auto; /* Centra il riquadro orizzontalmente */
+    padding: 20px;
+    border-radius: 18px;
+    border: 2px solid #ff8c00;
+    box-sizing: border-box; /* Evita che padding aumenti la larghezza */
+}
+/* ...qui continua il tuo CSS per esercizi, serie, timer ecc... */
