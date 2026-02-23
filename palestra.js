@@ -1,7 +1,7 @@
 // --- DATI ESERCIZI 5 GIORNI ---
 const exercisesData = {
   1: [
-    {name: "Ppppanca piana bilanciere", series: 3, reps: "8-12", tempo: "2-1-3", rest: 90},
+    {name: "Panca piana bilanciere", series: 3, reps: "8-12", tempo: "2-1-3", rest: 90},
     {name: "Panca inclinata manubri", series: 3, reps: "8-12", tempo: "2-1-3", rest: 90},
     {name: "Croci su panca", series: 2, reps: "10-12", tempo: "2-1-3", rest: 60},
     {name: "Panca manubri presa neutra", series: 3, reps: "8-10", tempo: "2-1-3", rest: 90},
