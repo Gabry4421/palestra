@@ -282,7 +282,7 @@ function loadDay(day){
       exDiv.className = "exercise";
       
       const h3 = document.createElement("h3");
-      h3.textContent = `${ex.name} (${ex.reps}) - Tempo: ${ex.tempo}`;
+      h3.textContent = `${ex.name}`;
       
       const videoBtn = document.createElement("button");
       videoBtn.className = "video-btn";
