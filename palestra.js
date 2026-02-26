@@ -241,8 +241,10 @@ function loadDay(day){
     videoContainer.className = "video-container";
     videoContainer.dataset.exercise = idx;
     videoContainer.style.display = videoVisibility[idx] ? "block" : "none";
+    videoContainer.style.aspectRatio = "9/16";
+    videoContainer.style.maxWidth = "250px";
     if(ex.video) {
-      videoContainer.innerHTML = `<video width="300" height="200" controls style="width:100%; background:#000;"><source src="${ex.video}" type="video/mp4">Il tuo browser non supporta il video.</video>`;
+      videoContainer.innerHTML = `<video controls style="width:100%; height:100%; object-fit: contain; background:#000;"><source src="${ex.video}" type="video/mp4">Il tuo browser non supporta il video.</video>`;
     } else {
       videoContainer.innerHTML = `<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'%3E%3Crect fill='%23ddd' width='300' height='200'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23999' font-size='18' font-family='Arial'%3EVideo Esercizio%3C/text%3E%3C/svg%3E" alt="Video ${ex.name}">`;
     }
@@ -360,7 +362,13 @@ function loadDay(day){
       videoContainer.className = "video-container";
       videoContainer.dataset.exercise = `abs_${absIdx}`;
       videoContainer.style.display = absVideoVisibility[absIdx] ? "block" : "none";
-      videoContainer.innerHTML = `<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'%3E%3Crect fill='%23ddd' width='300' height='200'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23999' font-size='18' font-family='Arial'%3EVideo Esercizio%3C/text%3E%3C/svg%3E" alt="Video ${ex.name}">`;
+      videoContainer.style.aspectRatio = "9/16";
+      videoContainer.style.maxWidth = "250px";
+      if(ex.video) {
+        videoContainer.innerHTML = `<video controls style="width:100%; height:100%; object-fit: contain; background:#000;"><source src="${ex.video}" type="video/mp4">Il tuo browser non supporta il video.</video>`;
+      } else {
+        videoContainer.innerHTML = `<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'%3E%3Crect fill='%23ddd' width='300' height='200'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23999' font-size='18' font-family='Arial'%3EVideo Esercizio%3C/text%3E%3C/svg%3E" alt="Video ${ex.name}">`;
+      }
       exDiv.appendChild(videoContainer);
 
       videoBtn.addEventListener("click", (e)=>{
