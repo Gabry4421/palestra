@@ -1,3 +1,4 @@
+
 // --- DATI ESERCIZI 5 GIORNI ---
 const exercisesData = {
   1: [
@@ -62,6 +63,21 @@ if(localStorage.getItem("miniPlayerMini") === "true") {
     miniControls.style.display = "flex";
 }
 
+// --- TIMER PERSISTENTI ---
+// mappa dei timer salvati (end timestamp in ms)
+let activeTimers = JSON.parse(localStorage.getItem('active_timers') || '{}');
+// intervalli attivi in memoria (non salvati)
+let activeIntervals = {};
+
+function saveActiveTimers() {
+  localStorage.setItem('active_timers', JSON.stringify(activeTimers));
+}
+
+function clearAllIntervals() {
+  Object.values(activeIntervals).forEach(id => clearInterval(id));
+  activeIntervals = {};
+}
+
 // --- CLICK GIORNI ---
 document.querySelectorAll(".day-card").forEach(card=>{
   card.addEventListener("click",()=>{
@@ -75,6 +91,8 @@ document.querySelectorAll(".day-card").forEach(card=>{
 
 // --- BACK BUTTON ---
 backBtn.addEventListener("click",()=>{
+  // stop interval timers to avoid duplicates; do NOT remove saved timers
+  clearAllIntervals();
   exercisesSection.classList.remove("active");
   daysSection.classList.add("active");
   exerciseList.innerHTML="";
@@ -84,6 +102,7 @@ backBtn.addEventListener("click",()=>{
 // --- BACKSTATE BROWSER ---
 window.addEventListener("popstate",()=>{
   if(exercisesSection.classList.contains("active")){
+    clearAllIntervals();
     exercisesSection.classList.remove("active");
     daysSection.classList.add("active");
     exerciseList.innerHTML="";
@@ -166,6 +185,9 @@ function loadDay(day){
         btn.classList.add("disabled");
     }
   });
+
+  // Ripristina eventuali timer attivi per questo giorno
+  restoreTimersForDay(day);
 }
 
 // --- TIMER SERIE ---
@@ -182,6 +204,13 @@ function startSeries(button){
   completed.push(`${button.dataset.exercise}_${button.dataset.index}`);
   localStorage.setItem(`completed_day_${day}`, JSON.stringify(completed));
 
+  // crea timer persistente
+  const timerId = `${day}_${button.dataset.exercise}_${button.dataset.index}`;
+  const end = Date.now() + rest * 1000;
+  activeTimers[timerId] = { end, rest, day, exercise: button.dataset.exercise, index: button.dataset.index };
+  saveActiveTimers();
+
+  // mostra UI e avvia interval
   timerDiv.innerHTML = "";
   const skipBtn = document.createElement("button");
   skipBtn.textContent = "Salta Recupero";
@@ -189,22 +218,18 @@ function startSeries(button){
   timerDiv.appendChild(skipBtn);
 
   const countdown = document.createElement("span");
-  countdown.textContent = ` Recupero: ${rest}s`;
   timerDiv.appendChild(countdown);
 
-  let time = rest;
-  const interval = setInterval(()=>{
-    time--;
-    countdown.textContent = ` Recupero: ${time}s`;
-    if(time <= 0){
-      clearInterval(interval);
-      timerDiv.innerHTML = "";
-      enableNextSeries(button);
-    }
-  },1000);
+  startIntervalForTimer(timerId, timerDiv, button);
 
   skipBtn.addEventListener("click", ()=>{
-    clearInterval(interval);
+    // rimuovi timer persistente e pulisci interval
+    if(activeIntervals[timerId]){
+      clearInterval(activeIntervals[timerId]);
+      delete activeIntervals[timerId];
+    }
+    delete activeTimers[timerId];
+    saveActiveTimers();
     timerDiv.innerHTML = "";
     enableNextSeries(button);
   });
@@ -217,6 +242,90 @@ function enableNextSeries(button){
     seriesBtns[nextIndex].disabled = false;
   }
 }
+
+// Avvia un interval che aggiorna il timer UI usando i dati salvati in activeTimers
+function startIntervalForTimer(timerId, timerDiv, button){
+  const timerData = activeTimers[timerId];
+  if(!timerData) return;
+  // assicurati che il bottone sia disabilitato
+  button.disabled = true;
+  button.classList.add("disabled");
+
+  function tick(){
+    const remaining = Math.ceil((timerData.end - Date.now()) / 1000);
+    if(remaining <= 0){
+      // finito
+      if(activeIntervals[timerId]){ clearInterval(activeIntervals[timerId]); delete activeIntervals[timerId]; }
+      delete activeTimers[timerId]; saveActiveTimers();
+      timerDiv.innerHTML = "";
+      enableNextSeries(button);
+      return;
+    }
+    timerDiv.querySelector('span').textContent = ` Recupero: ${remaining}s`;
+  }
+
+  // primo render
+  timerDiv.querySelector('span').textContent = ` Recupero: ${Math.max(0, Math.ceil((timerData.end - Date.now())/1000))}s`;
+
+  // se il timer è già scaduto, esegui immediatamente la conclusione
+  if(timerData.end <= Date.now()){
+    if(activeTimers[timerId]){ delete activeTimers[timerId]; saveActiveTimers(); }
+    timerDiv.innerHTML = "";
+    enableNextSeries(button);
+    return;
+  }
+
+  // set interval e salva id in memoria
+  const id = setInterval(tick, 1000);
+  activeIntervals[timerId] = id;
+}
+
+// Ripristina i timer salvati per il giorno corrente (invocata in loadDay)
+function restoreTimersForDay(day){
+  Object.keys(activeTimers).forEach(timerId => {
+    const parts = timerId.split('_');
+    const tDay = parts[0];
+    const ex = parts[1];
+    const idx = parts[2];
+    if(String(tDay) !== String(day)) return;
+
+    // trova il bottone corrispondente nella DOM del giorno caricato
+    const sel = `.series-btn[data-exercise="${ex}"][data-index="${idx}"]`;
+    const button = document.querySelector(sel);
+    if(!button) return;
+    const exDiv = button.closest('.exercise');
+    const timerDiv = exDiv.querySelector('.timer');
+
+    // assicurati che sia visibile come serie completata
+    button.disabled = true;
+    button.classList.add('disabled');
+
+    // crea skip button se non presente
+    timerDiv.innerHTML = '';
+    const skipBtn = document.createElement('button');
+    skipBtn.textContent = 'Salta Recupero';
+    skipBtn.className = 'skip-btn';
+    timerDiv.appendChild(skipBtn);
+    const countdown = document.createElement('span');
+    timerDiv.appendChild(countdown);
+
+    // collego evento skip
+    skipBtn.addEventListener('click', ()=>{
+      if(activeIntervals[timerId]){ clearInterval(activeIntervals[timerId]); delete activeIntervals[timerId]; }
+      delete activeTimers[timerId]; saveActiveTimers();
+      timerDiv.innerHTML = '';
+      enableNextSeries(button);
+    });
+
+    // avvia interval di rendering
+    startIntervalForTimer(timerId, timerDiv, button);
+  });
+}
+
+// puliamo gli interval quando la pagina sta per essere nascosta (evita duplicati e leak)
+window.addEventListener('beforeunload', ()=>{
+  clearAllIntervals();
+});
 
 // --- MINI PLAYER YOUTUBE ---
 let tag = document.createElement('script');
