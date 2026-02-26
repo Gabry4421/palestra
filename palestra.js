@@ -244,7 +244,7 @@ function loadDay(day){
     videoContainer.style.aspectRatio = "9/16";
     videoContainer.style.maxWidth = "250px";
     if(ex.video) {
-      videoContainer.innerHTML = `<video controls style="width:100%; height:100%; object-fit: contain; background:#000;"><source src="${ex.video}" type="video/mp4">Il tuo browser non supporta il video.</video>`;
+      videoContainer.innerHTML = `<video controls autoplay loop style="width:100%; height:100%; object-fit: contain; background:#000;"><source src="${ex.video}" type="video/mp4">Il tuo browser non supporta il video.</video>`;
     } else {
       videoContainer.innerHTML = `<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'%3E%3Crect fill='%23ddd' width='300' height='200'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23999' font-size='18' font-family='Arial'%3EVideo Esercizio%3C/text%3E%3C/svg%3E" alt="Video ${ex.name}">`;
     }
@@ -254,7 +254,19 @@ function loadDay(day){
     videoBtn.addEventListener("click", (e)=>{
       e.preventDefault();
       const isVisible = videoContainer.style.display === "block";
-      videoContainer.style.display = isVisible ? "none" : "block";
+      const videoTag = videoContainer.querySelector('video');
+      
+      if(isVisible) {
+        videoContainer.style.display = "none";
+        if(videoTag) videoTag.pause();
+      } else {
+        videoContainer.style.display = "block";
+        if(videoTag) videoTag.play();
+        setTimeout(() => {
+          videoContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+      }
+      
       videoVisibility[idx] = !isVisible;
       localStorage.setItem(`video_visibility_day_${day}`, JSON.stringify(videoVisibility));
     });
@@ -365,7 +377,7 @@ function loadDay(day){
       videoContainer.style.aspectRatio = "9/16";
       videoContainer.style.maxWidth = "250px";
       if(ex.video) {
-        videoContainer.innerHTML = `<video controls style="width:100%; height:100%; object-fit: contain; background:#000;"><source src="${ex.video}" type="video/mp4">Il tuo browser non supporta il video.</video>`;
+        videoContainer.innerHTML = `<video controls autoplay loop style="width:100%; height:100%; object-fit: contain; background:#000;"><source src="${ex.video}" type="video/mp4">Il tuo browser non supporta il video.</video>`;
       } else {
         videoContainer.innerHTML = `<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'%3E%3Crect fill='%23ddd' width='300' height='200'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23999' font-size='18' font-family='Arial'%3EVideo Esercizio%3C/text%3E%3C/svg%3E" alt="Video ${ex.name}">`;
       }
@@ -374,7 +386,19 @@ function loadDay(day){
       videoBtn.addEventListener("click", (e)=>{
         e.preventDefault();
         const isVisible = videoContainer.style.display === "block";
-        videoContainer.style.display = isVisible ? "none" : "block";
+        const videoTag = videoContainer.querySelector('video');
+        
+        if(isVisible) {
+          videoContainer.style.display = "none";
+          if(videoTag) videoTag.pause();
+        } else {
+          videoContainer.style.display = "block";
+          if(videoTag) videoTag.play();
+          setTimeout(() => {
+            videoContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 100);
+        }
+        
         absVideoVisibility[absIdx] = !isVisible;
         localStorage.setItem(`video_visibility_abs_day_${day}`, JSON.stringify(absVideoVisibility));
       });
