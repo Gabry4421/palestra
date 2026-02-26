@@ -121,7 +121,9 @@ document.querySelectorAll(".day-card").forEach(card=>{
 
 // --- BACK BUTTON ---
 backBtn.addEventListener("click",()=>{
-  // stop interval timers to avoid duplicates; do NOT remove saved timers
+  // stop interval timers to avoid duplicates; also close videos and remove saved visibility/state
+  const currentDay = dayTitle.textContent.replace("Giorno ","");
+  closeAllVideosAndClearState(currentDay);
   clearAllIntervals();
   exercisesSection.classList.remove("active");
   daysSection.classList.add("active");
@@ -132,6 +134,9 @@ backBtn.addEventListener("click",()=>{
 // --- BACKSTATE BROWSER ---
 window.addEventListener("popstate",()=>{
   if(exercisesSection.classList.contains("active")){
+    // closing videos and clearing their saved state because user left the day view
+    const currentDay = dayTitle.textContent.replace("Giorno ","");
+    closeAllVideosAndClearState(currentDay);
     clearAllIntervals();
     exercisesSection.classList.remove("active");
     daysSection.classList.add("active");
@@ -705,8 +710,29 @@ function restoreTimersForDay(day){
 
 // puliamo gli interval quando la pagina sta per essere nascosta (evita duplicati e leak)
 window.addEventListener('beforeunload', ()=>{
+  // puliamo gli interval e rimuoviamo la visibilità dei video per il giorno corrente
+  const currentDay = dayTitle && dayTitle.textContent ? dayTitle.textContent.replace("Giorno ","") : null;
+  closeAllVideosAndClearState(currentDay);
   clearAllIntervals();
 });
+
+// Nasconde/pausa tutti i video e rimuove gli stati di visibilità/riproduzione per un giorno
+function closeAllVideosAndClearState(day){
+  try{
+    document.querySelectorAll('.video-container').forEach(vc=>{
+      const v = vc.querySelector('video');
+      if(v){ try{ v.pause(); } catch(e){} }
+      vc.style.display = 'none';
+    });
+  } catch(e){}
+
+  if(day){
+    localStorage.removeItem(`video_visibility_day_${day}`);
+    localStorage.removeItem(`video_state_day_${day}`);
+    localStorage.removeItem(`video_visibility_abs_day_${day}`);
+    localStorage.removeItem(`video_state_abs_day_${day}`);
+  }
+}
 
 // --- MINI PLAYER YOUTUBE ---
 let tag = document.createElement('script');
