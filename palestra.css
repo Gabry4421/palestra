@@ -481,4 +481,47 @@ header .subtitle {
     border: 2px solid #ff8c00;
     box-sizing: border-box; /* Evita che padding aumenti la larghezza */
 }
+
+/* --- BOTTONE VIDEO --- */
+.video-btn {
+    background-color: #8a2be2;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    margin-left: 12px;
+    font-size: 0.9em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    vertical-align: middle;
+}
+
+.video-btn:hover {
+    background-color: #a020f0;
+    transform: scale(1.05);
+}
+
+.video-btn:active {
+    transform: scale(0.98);
+}
+
+/* --- VIDEO CONTAINER --- */
+.video-container {
+    background-color: #1a1a1a;
+    border-radius: 12px;
+    padding: 15px;
+    margin-top: 15px;
+    text-align: center;
+    border: 1px solid #8a2be2;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.video-container img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    max-height: 250px;
+}
+
 /* ...qui continua il tuo CSS per esercizi, serie, timer ecc... */
