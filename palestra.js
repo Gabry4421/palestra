@@ -257,6 +257,23 @@ function loadDay(day){
     absBadge.textContent = "EXTRA ADDOMINALI";
     exerciseList.appendChild(absBadge);
 
+    // Descrizione formattata degli addominali
+    const absDescription = document.createElement("div");
+    absDescription.className = "abs-description";
+    let descText = "";
+    
+    const emojiMap = ["1️⃣", "2️⃣", "3️⃣", "4️⃣"];
+    addominalsData[day].forEach((ex, idx) => {
+      descText += `${emojiMap[idx] || idx+1} ${ex.name}<br>${ex.series} x ${ex.reps}<br><br>`;
+    });
+    
+    // Aggiungi resto
+    const restTime = addominalsData[day][0]?.rest || 30;
+    descText += `👉 Riposo: ${restTime}-${restTime+10} sec tra esercizi`;
+    
+    absDescription.innerHTML = descText;
+    exerciseList.appendChild(absDescription);
+
     let absKgData = JSON.parse(localStorage.getItem(`kg_abs_day_${day}`)) || {};
     let absVideoVisibility = JSON.parse(localStorage.getItem(`video_visibility_abs_day_${day}`)) || {};
 
