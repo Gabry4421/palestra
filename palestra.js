@@ -150,6 +150,9 @@ function loadDay(day){
   resetBtn.className = "back-btn";
   resetBtn.addEventListener("click", ()=>{
       localStorage.removeItem(`completed_day_${day}`);
+      if([1, 3, 5].includes(parseInt(day))) {
+        localStorage.removeItem(`completed_abs_day_${day}`);
+      }
       loadDay(day);
   });
   exerciseList.appendChild(resetBtn);
@@ -272,19 +275,6 @@ function loadDay(day){
     absBadge.className = "abs-badge";
     absBadge.textContent = "EXTRA ADDOMINALI";
     exerciseList.appendChild(absBadge);
-
-    // Descrizione formattata degli addominali
-    const absDescription = document.createElement("div");
-    absDescription.className = "abs-description";
-    let descText = "";
-    
-    const emojiMap = ["1️⃣", "2️⃣", "3️⃣", "4️⃣"];
-    addominalsData[day].forEach((ex, idx) => {
-      descText += `${emojiMap[idx] || idx+1} ${ex.name}<br>${ex.series} x ${ex.reps}<br><br>`;
-    });
-    
-    absDescription.innerHTML = descText;
-    exerciseList.appendChild(absDescription);
 
     let absKgData = JSON.parse(localStorage.getItem(`kg_abs_day_${day}`)) || {};
     let absVideoVisibility = JSON.parse(localStorage.getItem(`video_visibility_abs_day_${day}`)) || {};
