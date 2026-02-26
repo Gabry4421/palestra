@@ -28,9 +28,7 @@ const exercisesData = {
     {name: "Shoulder press manubri", series: 3, reps: "8-12", tempo: "2-1-3", rest: 90},
     {name: "Alzate laterali manubri", series: 3, reps: "12-15", tempo: "2-1-3", rest: 60},
     {name: "Alzate posteriori manubri su panca", series: 2, reps: "12-15", tempo: "2-1-3", rest: 60},
-    {name: "Tirate al mento bilanciere", series: 2, reps: "10", tempo: "2-1-3", rest: 60},
-    {name: "Crunch su panca", series: 3, reps: "20", tempo: "2-1-3", rest: 30},
-    {name: "Plank", series: 3, reps: "40-60 sec", tempo: "Mantieni", rest: 30}
+    {name: "Tirate al mento bilanciere", series: 2, reps: "10", tempo: "2-1-3", rest: 60}
   ],
   5: [
     {name: "Panca piana bilanciere", series: 3, reps: "8", tempo: "2-1-3", rest: 90},
@@ -40,6 +38,38 @@ const exercisesData = {
     {name: "Floor press bilanciere", series: 3, reps: "8-10", tempo: "2-1-3", rest: 90}
   ]
 };
+
+// --- EXTRA ADDOMINALI (Giorni 1, 3, 5) ---
+const addominalsData = {
+  1: [
+    {name: "Plank", series: 3, reps: "30-40 sec", tempo: "Mantieni", rest: 35},
+    {name: "Dead Bug", series: 3, reps: "10 per lato", tempo: "2-1-3 lento", rest: 35},
+    {name: "Glute Bridge", series: 3, reps: "15", tempo: "2-1-2", rest: 35},
+    {name: "Side Plank", series: 3, reps: "25-30 sec per lato", tempo: "Mantieni", rest: 35}
+  ],
+  3: [
+    {name: "Reverse Crunch", series: 3, reps: "12", tempo: "2-1-2 lento", rest: 30},
+    {name: "Bird Dog", series: 3, reps: "10 per lato", tempo: "2-1-2", rest: 30},
+    {name: "Plank", series: 3, reps: "40 sec", tempo: "Mantieni", rest: 30},
+    {name: "Glute Bridge", series: 3, reps: "12-15", tempo: "2-1-2", rest: 30}
+  ],
+  5: [
+    {name: "Side Plank", series: 3, reps: "30 sec per lato", tempo: "Mantieni", rest: 30},
+    {name: "Dead Bug", series: 3, reps: "12 per lato", tempo: "2-1-3", rest: 30},
+    {name: "Reverse Crunch", series: 3, reps: "10-12", tempo: "2-1-2", rest: 30},
+    {name: "Bird Dog", series: 3, reps: "10 per lato", tempo: "2-1-2", rest: 30}
+  ]
+};
+
+// --- HOME GIORNI MUSCOLI ---
+const homeDays = [
+  { day: 1, muscles: "Petto e Tricipiti", weekday: "Lunedì", hasExtra: true },
+  { day: 2, muscles: "Schiena e Bicipiti", weekday: "Martedì", hasExtra: false },
+  { day: 3, muscles: "Gambe", weekday: "Mercoledì", hasExtra: true },
+  { day: 4, muscles: "Spalle", weekday: "Giovedì", hasExtra: false },
+  { day: 5, muscles: "Total Body", weekday: "Venerdì", hasExtra: true },
+  { day: 6, muscles: "Addominali", weekday: "Extra", hasExtra: false }
+];
 
 // --- SELEZIONE GIORNI ---
 const daysSection = document.getElementById("daysSection");
@@ -219,6 +249,102 @@ function loadDay(day){
 
   // Ripristina eventuali timer attivi per questo giorno
   restoreTimersForDay(day);
+
+  // --- SEZIONE EXTRA ADDOMINALI (Giorni 1, 3, 5) ---
+  if([1, 3, 5].includes(parseInt(day)) && addominalsData[day]) {
+    const absBadge = document.createElement("div");
+    absBadge.className = "abs-badge";
+    absBadge.textContent = "EXTRA ADDOMINALI";
+    exerciseList.appendChild(absBadge);
+
+    let absKgData = JSON.parse(localStorage.getItem(`kg_abs_day_${day}`)) || {};
+    let absVideoVisibility = JSON.parse(localStorage.getItem(`video_visibility_abs_day_${day}`)) || {};
+
+    addominalsData[day].forEach((ex, absIdx)=>{
+      const exDiv = document.createElement("div");
+      exDiv.className = "exercise";
+      
+      const h3 = document.createElement("h3");
+      h3.textContent = `${ex.name} (${ex.reps}) - Tempo: ${ex.tempo}`;
+      
+      const videoBtn = document.createElement("button");
+      videoBtn.className = "video-btn";
+      videoBtn.textContent = "Video";
+      videoBtn.dataset.exercise = `abs_${absIdx}`;
+      h3.appendChild(videoBtn);
+      
+      exDiv.appendChild(h3);
+
+      const seriesDiv = document.createElement("div");
+      seriesDiv.className = "series-container";
+
+      for(let i=0;i<ex.series;i++){
+        const rowDiv = document.createElement("div");
+
+        const btn = document.createElement("button");
+        btn.className = "series-btn";
+        btn.textContent = `Serie ${i+1}`;
+        btn.disabled = i!==0;
+        btn.dataset.rest = ex.rest;
+        btn.dataset.index = i;
+        btn.dataset.exercise = `abs_${absIdx}`;
+        btn.addEventListener("click",()=>startSeries(btn));
+
+        const kgInput = document.createElement("input");
+        kgInput.type="number";
+        kgInput.className = "kg-input";
+        kgInput.placeholder="0";
+        if(absKgData[`${absIdx}_${i}`]) kgInput.value = absKgData[`${absIdx}_${i}`];
+
+        const kgLabel = document.createElement("span");
+        kgLabel.className = "kg-label";
+        kgLabel.textContent="kg";
+
+        kgInput.addEventListener("change",()=>{
+          absKgData[`${absIdx}_${i}`] = kgInput.value;
+          localStorage.setItem(`kg_abs_day_${day}`,JSON.stringify(absKgData));
+        });
+
+        rowDiv.appendChild(btn);
+        rowDiv.appendChild(kgInput);
+        rowDiv.appendChild(kgLabel);
+        seriesDiv.appendChild(rowDiv);
+      }
+
+      exDiv.appendChild(seriesDiv);
+
+      const timerDiv = document.createElement("div");
+      timerDiv.className = "timer";
+      exDiv.appendChild(timerDiv);
+
+      const videoContainer = document.createElement("div");
+      videoContainer.className = "video-container";
+      videoContainer.dataset.exercise = `abs_${absIdx}`;
+      videoContainer.style.display = absVideoVisibility[absIdx] ? "block" : "none";
+      videoContainer.innerHTML = `<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'%3E%3Crect fill='%23ddd' width='300' height='200'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23999' font-size='18' font-family='Arial'%3EVideo Esercizio%3C/text%3E%3C/svg%3E" alt="Video ${ex.name}">`;
+      exDiv.appendChild(videoContainer);
+
+      videoBtn.addEventListener("click", (e)=>{
+        e.preventDefault();
+        const isVisible = videoContainer.style.display === "block";
+        videoContainer.style.display = isVisible ? "none" : "block";
+        absVideoVisibility[absIdx] = !isVisible;
+        localStorage.setItem(`video_visibility_abs_day_${day}`, JSON.stringify(absVideoVisibility));
+      });
+
+      exerciseList.appendChild(exDiv);
+    });
+
+    // Ripristino serie completate addominali
+    const absSeriesBtns = document.querySelectorAll(".series-btn[data-exercise^='abs_']");
+    let absCompleted = JSON.parse(localStorage.getItem(`completed_abs_day_${day}`)) || [];
+    absSeriesBtns.forEach(btn=>{
+      if(absCompleted.includes(`${btn.dataset.exercise}_${btn.dataset.index}`)){
+        btn.disabled = true;
+        btn.classList.add("disabled");
+      }
+    });
+  }
 }
 
 // --- TIMER SERIE ---
@@ -231,14 +357,23 @@ function startSeries(button){
 
   // SALVA SERIE COMPLETATA
   let day = dayTitle.textContent.replace("Giorno ","");
-  let completed = JSON.parse(localStorage.getItem(`completed_day_${day}`)) || [];
-  completed.push(`${button.dataset.exercise}_${button.dataset.index}`);
-  localStorage.setItem(`completed_day_${day}`, JSON.stringify(completed));
+  let exerciseKey = button.dataset.exercise;
+  let isAbdominal = exerciseKey.startsWith("abs_");
+  
+  if(isAbdominal) {
+    let absCompleted = JSON.parse(localStorage.getItem(`completed_abs_day_${day}`)) || [];
+    absCompleted.push(`${exerciseKey}_${button.dataset.index}`);
+    localStorage.setItem(`completed_abs_day_${day}`, JSON.stringify(absCompleted));
+  } else {
+    let completed = JSON.parse(localStorage.getItem(`completed_day_${day}`)) || [];
+    completed.push(`${exerciseKey}_${button.dataset.index}`);
+    localStorage.setItem(`completed_day_${day}`, JSON.stringify(completed));
+  }
 
   // crea timer persistente
-  const timerId = `${day}_${button.dataset.exercise}_${button.dataset.index}`;
+  const timerId = `${day}_${exerciseKey}_${button.dataset.index}`;
   const end = Date.now() + rest * 1000;
-  activeTimers[timerId] = { end, rest, day, exercise: button.dataset.exercise, index: button.dataset.index };
+  activeTimers[timerId] = { end, rest, day, exercise: exerciseKey, index: button.dataset.index };
   saveActiveTimers();
 
   // mostra UI e avvia interval
