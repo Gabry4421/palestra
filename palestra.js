@@ -176,6 +176,10 @@ function loadDay(day){
     // Crea h3 con bottone Video
     const h3 = document.createElement("h3");
     h3.textContent = `${ex.name} (${ex.reps}) - Tempo: ${ex.tempo}`;
+    // allinea il bottone Video a destra
+    h3.style.display = 'flex';
+    h3.style.justifyContent = 'space-between';
+    h3.style.alignItems = 'center';
     
     const videoBtn = document.createElement("button");
     videoBtn.className = "video-btn";
@@ -207,9 +211,12 @@ function loadDay(day){
       const isTimeExercise = ["Plank", "Side Plank"].includes(ex.name);
       
       if(isTimeExercise) {
-        kgInput.type="text";
-        kgInput.placeholder="00:00";
-        kgInput.maxLength="5";
+        // usa tastiera numerica sui dispositivi mobili
+        kgInput.type = "tel";
+        kgInput.setAttribute('inputmode', 'numeric');
+        kgInput.setAttribute('pattern', '[0-9]*');
+        kgInput.placeholder = "00:00";
+        kgInput.maxLength = 5;
         if(kgData[`${idx}_${i}`]) kgInput.value = kgData[`${idx}_${i}`];
         kgInput.addEventListener("input", (e)=>{
           let val = e.target.value.replace(/[^0-9]/g, "");
@@ -387,6 +394,10 @@ function loadDay(day){
       
       const h3 = document.createElement("h3");
       h3.textContent = `${ex.name}`;
+      // allinea il bottone Video a destra
+      h3.style.display = 'flex';
+      h3.style.justifyContent = 'space-between';
+      h3.style.alignItems = 'center';
       
       const videoBtn = document.createElement("button");
       videoBtn.className = "video-btn";
@@ -418,9 +429,12 @@ function loadDay(day){
         const isTimeExercise = ["Plank", "Side Plank"].includes(ex.name);
         
         if(isTimeExercise) {
-          kgInput.type="text";
-          kgInput.placeholder="00:00";
-          kgInput.maxLength="5";
+          // usa tastiera numerica sui dispositivi mobili
+          kgInput.type = "tel";
+          kgInput.setAttribute('inputmode', 'numeric');
+          kgInput.setAttribute('pattern', '[0-9]*');
+          kgInput.placeholder = "00:00";
+          kgInput.maxLength = 5;
           if(absKgData[`${absIdx}_${i}`]) kgInput.value = absKgData[`${absIdx}_${i}`];
           kgInput.addEventListener("input", (e)=>{
             let val = e.target.value.replace(/[^0-9]/g, "");
