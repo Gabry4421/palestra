@@ -126,10 +126,24 @@ function loadDay(day){
 
   // Recupero kg salvati
   let kgData = JSON.parse(localStorage.getItem(`kg_day_${day}`)) || {};
+  // Recupero video visibility state
+  let videoVisibility = JSON.parse(localStorage.getItem(`video_visibility_day_${day}`)) || {};
+
   exercisesData[day].forEach((ex, idx)=>{
     const exDiv = document.createElement("div");
     exDiv.className = "exercise";
-    exDiv.innerHTML = `<h3>${ex.name} (${ex.reps}) - Tempo: ${ex.tempo}</h3>`;
+    
+    // Crea h3 con bottone Video
+    const h3 = document.createElement("h3");
+    h3.textContent = `${ex.name} (${ex.reps}) - Tempo: ${ex.tempo}`;
+    
+    const videoBtn = document.createElement("button");
+    videoBtn.className = "video-btn";
+    videoBtn.textContent = "Video";
+    videoBtn.dataset.exercise = idx;
+    h3.appendChild(videoBtn);
+    
+    exDiv.appendChild(h3);
 
     const seriesDiv = document.createElement("div");
     seriesDiv.className = "series-container";
@@ -172,6 +186,23 @@ function loadDay(day){
     const timerDiv = document.createElement("div");
     timerDiv.className = "timer";
     exDiv.appendChild(timerDiv);
+
+    // VIDEO CONTAINER
+    const videoContainer = document.createElement("div");
+    videoContainer.className = "video-container";
+    videoContainer.dataset.exercise = idx;
+    videoContainer.style.display = videoVisibility[idx] ? "block" : "none";
+    videoContainer.innerHTML = `<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'%3E%3Crect fill='%23ddd' width='300' height='200'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23999' font-size='18' font-family='Arial'%3EVideo Esercizio%3C/text%3E%3C/svg%3E" alt="Video ${ex.name}">`;
+    exDiv.appendChild(videoContainer);
+
+    // EVENT LISTENER BOTTONE VIDEO
+    videoBtn.addEventListener("click", (e)=>{
+      e.preventDefault();
+      const isVisible = videoContainer.style.display === "block";
+      videoContainer.style.display = isVisible ? "none" : "block";
+      videoVisibility[idx] = !isVisible;
+      localStorage.setItem(`video_visibility_day_${day}`, JSON.stringify(videoVisibility));
+    });
 
     exerciseList.appendChild(exDiv);
   });
@@ -333,6 +364,9 @@ tag.src = "https://www.youtube.com/iframe_api";
 document.body.appendChild(tag);
 
 let ytPlayer;
+let ytPlaybackState = {}; // { videoId, isPlaying, currentTime }
+let ytSaveInterval = null;
+
 function onYouTubeIframeAPIReady() {
     ytPlayer = new YT.Player('ytPlayer', {
         height: '200',
@@ -343,7 +377,63 @@ function onYouTubeIframeAPIReady() {
     // RIPRISTINO VIDEO SALVATO
     const savedVideo = localStorage.getItem("miniPlayerVideo");
     if(savedVideo) ytPlayer.loadVideoById(savedVideo);
+
+    // RIPRISTINO STATO DI RIPRODUZIONE
+    const savedState = localStorage.getItem("miniPlayerState");
+    if(savedState){
+        try {
+            ytPlaybackState = JSON.parse(savedState);
+            // se era in riproduzione, rilancia dopo che il video è caricato
+            if(ytPlaybackState.isPlaying){
+                setTimeout(() => {
+                    if(ytPlayer && ytPlayer.playVideo){
+                        ytPlayer.playVideo();
+                        if(ytPlaybackState.currentTime) ytPlayer.seekTo(ytPlaybackState.currentTime);
+                    }
+                }, 1000);
+            }
+        } catch(e) { console.log("Errore ripristino stato:", e); }
+    }
+
+    // Auto-salva posizione video ogni 5 secondi
+    if(ytSaveInterval) clearInterval(ytSaveInterval);
+    ytSaveInterval = setInterval(() => {
+        if(ytPlayer && ytPlayer.getPlayerState){
+            try {
+                ytPlaybackState.videoId = ytPlayer.getVideoData().video_id;
+                ytPlaybackState.isPlaying = (ytPlayer.getPlayerState() === YT.PlayerState.PLAYING);
+                ytPlaybackState.currentTime = ytPlayer.getCurrentTime();
+                localStorage.setItem("miniPlayerState", JSON.stringify(ytPlaybackState));
+            } catch(e) { /* errore nell'accesso, ignora */ }
+        }
+    }, 5000);
 }
+
+// Monitora visibility per riprendere quando la pagina torna in foreground
+document.addEventListener('visibilitychange', ()=>{
+    if(!ytPlayer) return;
+    if(document.hidden){
+        // Pagina nascosta: salva stato attuale
+        try {
+            ytPlaybackState.videoId = ytPlayer.getVideoData().video_id;
+            ytPlaybackState.isPlaying = (ytPlayer.getPlayerState() === YT.PlayerState.PLAYING);
+            ytPlaybackState.currentTime = ytPlayer.getCurrentTime();
+            localStorage.setItem("miniPlayerState", JSON.stringify(ytPlaybackState));
+        } catch(e) {}
+    } else {
+        // Pagina tornata visibile: riprendi se era in riproduzione
+        try {
+            const saved = localStorage.getItem("miniPlayerState");
+            if(saved){
+                const state = JSON.parse(saved);
+                if(state.isPlaying && ytPlayer.getPlayerState() !== YT.PlayerState.PLAYING){
+                    ytPlayer.playVideo();
+                    if(state.currentTime) setTimeout(() => ytPlayer.seekTo(state.currentTime), 500);
+                }
+            }
+        } catch(e) {}
+    }
+});
 
 // --- TOGGLE MINI ---
 toggleMiniBtn.addEventListener("click", () => {
