@@ -10,7 +10,7 @@ const exercisesData = {
     {name: "Estensioni sopra testa manubri", series: 2, reps: "10-12", tempo: "2-1-3", rest: 60}
   ],
   2: [
-    {name: "Rematore bilanciere", series: 3, reps: "8-12", tempo: "2-1-3", rest: 90},
+    {name: "Rematore bilanciere", series: 3, reps: "8-12", tempo: "2-1-3", rest: 90, video: "https://raw.githubusercontent.com/Gabry4421/palestra/main/gifs/Rematore%20bilanciere.mp4"},
     {name: "Rematore 1 braccio manubrio", series: 3, reps: "10 per lato", tempo: "2-1-3", rest: 60},
     {name: "Pullover manubrio", series: 2, reps: "10-12", tempo: "2-1-3", rest: 60},
     {name: "Hammer curl", series: 3, reps: "8-12", tempo: "2-1-3", rest: 60},
@@ -241,7 +241,11 @@ function loadDay(day){
     videoContainer.className = "video-container";
     videoContainer.dataset.exercise = idx;
     videoContainer.style.display = videoVisibility[idx] ? "block" : "none";
-    videoContainer.innerHTML = `<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'%3E%3Crect fill='%23ddd' width='300' height='200'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23999' font-size='18' font-family='Arial'%3EVideo Esercizio%3C/text%3E%3C/svg%3E" alt="Video ${ex.name}">`;
+    if(ex.video) {
+      videoContainer.innerHTML = `<video width="300" height="200" controls style="width:100%; background:#000;"><source src="${ex.video}" type="video/mp4">Il tuo browser non supporta il video.</video>`;
+    } else {
+      videoContainer.innerHTML = `<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'%3E%3Crect fill='%23ddd' width='300' height='200'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23999' font-size='18' font-family='Arial'%3EVideo Esercizio%3C/text%3E%3C/svg%3E" alt="Video ${ex.name}">`;
+    }
     exDiv.appendChild(videoContainer);
 
     // EVENT LISTENER BOTTONE VIDEO
