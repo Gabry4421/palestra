@@ -161,6 +161,8 @@ function loadDay(day){
   let kgData = JSON.parse(localStorage.getItem(`kg_day_${day}`)) || {};
   // Recupero video visibility state
   let videoVisibility = JSON.parse(localStorage.getItem(`video_visibility_day_${day}`)) || {};
+  // Stato di riproduzione/tempo dei video (per restore di play/time)
+  let videoState = JSON.parse(localStorage.getItem(`video_state_day_${day}`)) || {};
 
   exercisesData[day].forEach((ex, idx)=>{
     const exDiv = document.createElement("div");
@@ -244,11 +246,44 @@ function loadDay(day){
     videoContainer.style.aspectRatio = "9/16";
     videoContainer.style.maxWidth = "250px";
     if(ex.video) {
-      videoContainer.innerHTML = `<video controls muted loop style="width:100%; height:100%; object-fit: contain; background:#000;"><source src="${ex.video}" type="video/mp4">Il tuo browser non supporta il video.</video>`;
+      // crea video senza rimuovere supporto - ma forziamo il muto e salviamo lo stato
+      videoContainer.innerHTML = `<video muted loop style="width:100%; height:100%; object-fit: contain; background:#000;"><source src="${ex.video}" type="video/mp4">Il tuo browser non supporta il video.</video>`;
       const videoTag = videoContainer.querySelector('video');
-      videoTag.addEventListener('volumechange', (e) => {
-        e.target.muted = true;
-      });
+      if(videoTag){
+        // forziamo il muto e blocchiamo modifiche al volume
+        videoTag.muted = true;
+        videoTag.defaultMuted = true;
+        videoTag.volume = 0;
+        videoTag.addEventListener('volumechange', () => {
+          if(!videoTag.muted || videoTag.volume !== 0){ videoTag.muted = true; videoTag.volume = 0; }
+        });
+
+        // restore play/time se presente e se la visibilità era true
+        const saved = videoState[idx];
+        if(videoVisibility[idx]){
+          if(saved && typeof saved.currentTime === 'number'){
+            try { videoTag.currentTime = saved.currentTime; } catch(e){}
+          }
+          if(saved && saved.isPlaying){ videoTag.play().catch(()=>{}); }
+        }
+
+        // salva progressi temporanei e stato play/pause
+        videoTag.addEventListener('timeupdate', ()=>{
+          videoState[idx] = videoState[idx] || {};
+          videoState[idx].currentTime = videoTag.currentTime;
+          localStorage.setItem(`video_state_day_${day}`, JSON.stringify(videoState));
+        });
+        videoTag.addEventListener('play', ()=>{
+          videoState[idx] = videoState[idx] || {};
+          videoState[idx].isPlaying = true;
+          localStorage.setItem(`video_state_day_${day}`, JSON.stringify(videoState));
+        });
+        videoTag.addEventListener('pause', ()=>{
+          videoState[idx] = videoState[idx] || {};
+          videoState[idx].isPlaying = false;
+          localStorage.setItem(`video_state_day_${day}`, JSON.stringify(videoState));
+        });
+      }
     } else {
       videoContainer.innerHTML = `<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'%3E%3Crect fill='%23ddd' width='300' height='200'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23999' font-size='18' font-family='Arial'%3EVideo Esercizio%3C/text%3E%3C/svg%3E" alt="Video ${ex.name}">`;
     }
@@ -257,12 +292,51 @@ function loadDay(day){
     // EVENT LISTENER BOTTONE VIDEO
     videoBtn.addEventListener("click", (e)=>{
       e.preventDefault();
+
+      // Chiudi tutti gli altri video aperti (massimo 1 visibile alla volta)
+      document.querySelectorAll('.video-container').forEach(vc => {
+        if(vc === videoContainer) return;
+        if(vc.style.display === 'block'){
+          const v = vc.querySelector('video');
+          if(v) v.pause();
+          vc.style.display = 'none';
+
+          const key = vc.dataset.exercise;
+          if(String(key).startsWith('abs_')){
+            // aggiorna storage addominali
+            const absIdx = key.split('_')[1];
+            let absVis = JSON.parse(localStorage.getItem(`video_visibility_abs_day_${day}`)) || {};
+            absVis[absIdx] = false;
+            localStorage.setItem(`video_visibility_abs_day_${day}`, JSON.stringify(absVis));
+            let absSt = JSON.parse(localStorage.getItem(`video_state_abs_day_${day}`)) || {};
+            absSt[absIdx] = absSt[absIdx] || {};
+            absSt[absIdx].isPlaying = false;
+            localStorage.setItem(`video_state_abs_day_${day}`, JSON.stringify(absSt));
+          } else {
+            // aggiorna storage esercizi normali
+            let vis = JSON.parse(localStorage.getItem(`video_visibility_day_${day}`)) || {};
+            vis[key] = false;
+            localStorage.setItem(`video_visibility_day_${day}`, JSON.stringify(vis));
+            let st = JSON.parse(localStorage.getItem(`video_state_day_${day}`)) || {};
+            st[key] = st[key] || {};
+            st[key].isPlaying = false;
+            localStorage.setItem(`video_state_day_${day}`, JSON.stringify(st));
+          }
+        }
+      });
+
       const isVisible = videoContainer.style.display === "block";
       const videoTag = videoContainer.querySelector('video');
       
       if(isVisible) {
         videoContainer.style.display = "none";
-        if(videoTag) videoTag.pause();
+        if(videoTag) {
+          videoTag.pause();
+          // segniamo che non deve riprendere in automatico
+          videoState[idx] = videoState[idx] || {};
+          videoState[idx].isPlaying = false;
+          localStorage.setItem(`video_state_day_${day}`, JSON.stringify(videoState));
+        }
       } else {
         videoContainer.style.display = "block";
         if(videoTag) videoTag.play();
@@ -270,7 +344,7 @@ function loadDay(day){
           videoContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }, 100);
       }
-      
+
       videoVisibility[idx] = !isVisible;
       localStorage.setItem(`video_visibility_day_${day}`, JSON.stringify(videoVisibility));
     });
@@ -300,6 +374,7 @@ function loadDay(day){
 
     let absKgData = JSON.parse(localStorage.getItem(`kg_abs_day_${day}`)) || {};
     let absVideoVisibility = JSON.parse(localStorage.getItem(`video_visibility_abs_day_${day}`)) || {};
+    let absVideoState = JSON.parse(localStorage.getItem(`video_state_abs_day_${day}`)) || {};
 
     addominalsData[day].forEach((ex, absIdx)=>{
       const exDiv = document.createElement("div");
@@ -381,11 +456,41 @@ function loadDay(day){
       videoContainer.style.aspectRatio = "9/16";
       videoContainer.style.maxWidth = "250px";
       if(ex.video) {
-        videoContainer.innerHTML = `<video controls muted loop style="width:100%; height:100%; object-fit: contain; background:#000;"><source src="${ex.video}" type="video/mp4">Il tuo browser non supporta il video.</video>`;
+        videoContainer.innerHTML = `<video muted loop style="width:100%; height:100%; object-fit: contain; background:#000;"><source src="${ex.video}" type="video/mp4">Il tuo browser non supporta il video.</video>`;
         const videoTag = videoContainer.querySelector('video');
-        videoTag.addEventListener('volumechange', (e) => {
-          e.target.muted = true;
-        });
+        if(videoTag){
+          videoTag.muted = true;
+          videoTag.defaultMuted = true;
+          videoTag.volume = 0;
+          videoTag.addEventListener('volumechange', () => {
+            if(!videoTag.muted || videoTag.volume !== 0){ videoTag.muted = true; videoTag.volume = 0; }
+          });
+
+          // restore se era visibile
+          const saved = absVideoState[absIdx];
+          if(absVideoVisibility[absIdx]){
+            if(saved && typeof saved.currentTime === 'number'){
+              try { videoTag.currentTime = saved.currentTime; } catch(e){}
+            }
+            if(saved && saved.isPlaying){ videoTag.play().catch(()=>{}); }
+          }
+
+          videoTag.addEventListener('timeupdate', ()=>{
+            absVideoState[absIdx] = absVideoState[absIdx] || {};
+            absVideoState[absIdx].currentTime = videoTag.currentTime;
+            localStorage.setItem(`video_state_abs_day_${day}`, JSON.stringify(absVideoState));
+          });
+          videoTag.addEventListener('play', ()=>{
+            absVideoState[absIdx] = absVideoState[absIdx] || {};
+            absVideoState[absIdx].isPlaying = true;
+            localStorage.setItem(`video_state_abs_day_${day}`, JSON.stringify(absVideoState));
+          });
+          videoTag.addEventListener('pause', ()=>{
+            absVideoState[absIdx] = absVideoState[absIdx] || {};
+            absVideoState[absIdx].isPlaying = false;
+            localStorage.setItem(`video_state_abs_day_${day}`, JSON.stringify(absVideoState));
+          });
+        }
       } else {
         videoContainer.innerHTML = `<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'%3E%3Crect fill='%23ddd' width='300' height='200'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23999' font-size='18' font-family='Arial'%3EVideo Esercizio%3C/text%3E%3C/svg%3E" alt="Video ${ex.name}">`;
       }
@@ -393,12 +498,43 @@ function loadDay(day){
 
       videoBtn.addEventListener("click", (e)=>{
         e.preventDefault();
+        // Chiudi tutti gli altri video aperti (massimo 1 visibile alla volta)
+        document.querySelectorAll('.video-container').forEach(vc => {
+          if(vc === videoContainer) return;
+          if(vc.style.display === 'block'){
+            const v = vc.querySelector('video');
+            if(v) v.pause();
+            vc.style.display = 'none';
+
+            const key = vc.dataset.exercise;
+            if(String(key).startsWith('abs_')){
+              const aIdx = key.split('_')[1];
+              absVideoVisibility[aIdx] = false;
+              localStorage.setItem(`video_visibility_abs_day_${day}`, JSON.stringify(absVideoVisibility));
+              absVideoState[aIdx] = absVideoState[aIdx] || {};
+              absVideoState[aIdx].isPlaying = false;
+              localStorage.setItem(`video_state_abs_day_${day}`, JSON.stringify(absVideoState));
+            } else {
+              videoVisibility[key] = false;
+              localStorage.setItem(`video_visibility_day_${day}`, JSON.stringify(videoVisibility));
+              videoState[key] = videoState[key] || {};
+              videoState[key].isPlaying = false;
+              localStorage.setItem(`video_state_day_${day}`, JSON.stringify(videoState));
+            }
+          }
+        });
+
         const isVisible = videoContainer.style.display === "block";
         const videoTag = videoContainer.querySelector('video');
         
         if(isVisible) {
           videoContainer.style.display = "none";
-          if(videoTag) videoTag.pause();
+          if(videoTag) {
+            videoTag.pause();
+            absVideoState[absIdx] = absVideoState[absIdx] || {};
+            absVideoState[absIdx].isPlaying = false;
+            localStorage.setItem(`video_state_abs_day_${day}`, JSON.stringify(absVideoState));
+          }
         } else {
           videoContainer.style.display = "block";
           if(videoTag) videoTag.play();
@@ -406,7 +542,7 @@ function loadDay(day){
             videoContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
           }, 100);
         }
-        
+
         absVideoVisibility[absIdx] = !isVisible;
         localStorage.setItem(`video_visibility_abs_day_${day}`, JSON.stringify(absVideoVisibility));
       });
