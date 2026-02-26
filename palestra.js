@@ -191,14 +191,30 @@ function loadDay(day){
       btn.addEventListener("click",()=>startSeries(btn));
 
       const kgInput = document.createElement("input");
-      kgInput.type="number";
       kgInput.className = "kg-input";
       kgInput.placeholder="0";
-      if(kgData[`${idx}_${i}`]) kgInput.value = kgData[`${idx}_${i}`];
+      
+      const isTimeExercise = ["Plank", "Side Plank"].includes(ex.name);
+      
+      if(isTimeExercise) {
+        kgInput.type="text";
+        kgInput.placeholder="00:00";
+        kgInput.maxLength="5";
+        if(kgData[`${idx}_${i}`]) kgInput.value = kgData[`${idx}_${i}`];
+        kgInput.addEventListener("input", (e)=>{
+          let val = e.target.value.replace(/[^0-9]/g, "");
+          if(val.length > 4) val = val.slice(0, 4);
+          if(val.length > 2) val = val.slice(0, 2) + ":" + val.slice(2);
+          e.target.value = val;
+        });
+      } else {
+        kgInput.type="number";
+        if(kgData[`${idx}_${i}`]) kgInput.value = kgData[`${idx}_${i}`];
+      }
 
       const kgLabel = document.createElement("span");
       kgLabel.className = "kg-label";
-      kgLabel.textContent="kg";
+      kgLabel.textContent = isTimeExercise ? "min" : "kg";
 
       kgInput.addEventListener("change",()=>{
         kgData[`${idx}_${i}`] = kgInput.value;
@@ -267,10 +283,6 @@ function loadDay(day){
       descText += `${emojiMap[idx] || idx+1} ${ex.name}<br>${ex.series} x ${ex.reps}<br><br>`;
     });
     
-    // Aggiungi resto
-    const restTime = addominalsData[day][0]?.rest || 30;
-    descText += `👉 Riposo: ${restTime}-${restTime+10} sec tra esercizi`;
-    
     absDescription.innerHTML = descText;
     exerciseList.appendChild(absDescription);
 
@@ -308,14 +320,30 @@ function loadDay(day){
         btn.addEventListener("click",()=>startSeries(btn));
 
         const kgInput = document.createElement("input");
-        kgInput.type="number";
         kgInput.className = "kg-input";
         kgInput.placeholder="0";
-        if(absKgData[`${absIdx}_${i}`]) kgInput.value = absKgData[`${absIdx}_${i}`];
+        
+        const isTimeExercise = ["Plank", "Side Plank"].includes(ex.name);
+        
+        if(isTimeExercise) {
+          kgInput.type="text";
+          kgInput.placeholder="00:00";
+          kgInput.maxLength="5";
+          if(absKgData[`${absIdx}_${i}`]) kgInput.value = absKgData[`${absIdx}_${i}`];
+          kgInput.addEventListener("input", (e)=>{
+            let val = e.target.value.replace(/[^0-9]/g, "");
+            if(val.length > 4) val = val.slice(0, 4);
+            if(val.length > 2) val = val.slice(0, 2) + ":" + val.slice(2);
+            e.target.value = val;
+          });
+        } else {
+          kgInput.type="number";
+          if(absKgData[`${absIdx}_${i}`]) kgInput.value = absKgData[`${absIdx}_${i}`];
+        }
 
         const kgLabel = document.createElement("span");
         kgLabel.className = "kg-label";
-        kgLabel.textContent="kg";
+        kgLabel.textContent = isTimeExercise ? "min" : "kg";
 
         kgInput.addEventListener("change",()=>{
           absKgData[`${absIdx}_${i}`] = kgInput.value;
