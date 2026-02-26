@@ -244,7 +244,11 @@ function loadDay(day){
     videoContainer.style.aspectRatio = "9/16";
     videoContainer.style.maxWidth = "250px";
     if(ex.video) {
-      videoContainer.innerHTML = `<video controls autoplay loop style="width:100%; height:100%; object-fit: contain; background:#000;"><source src="${ex.video}" type="video/mp4">Il tuo browser non supporta il video.</video>`;
+      videoContainer.innerHTML = `<video controls muted loop style="width:100%; height:100%; object-fit: contain; background:#000;"><source src="${ex.video}" type="video/mp4">Il tuo browser non supporta il video.</video>`;
+      const videoTag = videoContainer.querySelector('video');
+      videoTag.addEventListener('volumechange', (e) => {
+        e.target.muted = true;
+      });
     } else {
       videoContainer.innerHTML = `<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'%3E%3Crect fill='%23ddd' width='300' height='200'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23999' font-size='18' font-family='Arial'%3EVideo Esercizio%3C/text%3E%3C/svg%3E" alt="Video ${ex.name}">`;
     }
@@ -377,7 +381,11 @@ function loadDay(day){
       videoContainer.style.aspectRatio = "9/16";
       videoContainer.style.maxWidth = "250px";
       if(ex.video) {
-        videoContainer.innerHTML = `<video controls autoplay loop style="width:100%; height:100%; object-fit: contain; background:#000;"><source src="${ex.video}" type="video/mp4">Il tuo browser non supporta il video.</video>`;
+        videoContainer.innerHTML = `<video controls muted loop style="width:100%; height:100%; object-fit: contain; background:#000;"><source src="${ex.video}" type="video/mp4">Il tuo browser non supporta il video.</video>`;
+        const videoTag = videoContainer.querySelector('video');
+        videoTag.addEventListener('volumechange', (e) => {
+          e.target.muted = true;
+        });
       } else {
         videoContainer.innerHTML = `<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'%3E%3Crect fill='%23ddd' width='300' height='200'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23999' font-size='18' font-family='Arial'%3EVideo Esercizio%3C/text%3E%3C/svg%3E" alt="Video ${ex.name}">`;
       }
