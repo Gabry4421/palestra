@@ -18,11 +18,11 @@ const exercisesData = {
     {name: "Curl inclinato presa neutra", series: 2, reps: "10", tempo: "2-1-3", rest: 60, video: "https://raw.githubusercontent.com/Gabry4421/palestra/main/gifs/CurlInclinatoPresaNeutra.mp4"}
   ],
   3: [
-    {name: "Squat bilanciere", series: 3, reps: "10-12", tempo: "2-1-3", rest: 120},
-    {name: "Affondi manubri", series: 3, reps: "10 per gamba", tempo: "2-1-3", rest: 60},
-    {name: "Stacco rumeno bilanciere", series: 3, reps: "8-12", tempo: "2-1-3", rest: 90},
-    {name: "Macchinario gambe", series: 3, reps: "10-12", tempo: "2-1-3", rest: 60},
-    {name: "Calf raise", series: 3, reps: "15-20", tempo: "2-1-3", rest: 60}
+    {name: "Squat bilanciere", series: 3, reps: "10-12", tempo: "2-1-3", rest: 120, video: "https://raw.githubusercontent.com/Gabry4421/palestra/main/gifs/SquatBilanciere.mp4"},
+    {name: "Affondi manubri", series: 3, reps: "10 per gamba", tempo: "2-1-3", rest: 60, video: "https://raw.githubusercontent.com/Gabry4421/palestra/main/gifs/AffondiManubri.mp4"},
+    {name: "Stacco rumeno bilanciere", series: 3, reps: "8-12", tempo: "2-1-3", rest: 90, video: "https://raw.githubusercontent.com/Gabry4421/palestra/main/gifs/StaccoRumenoBilanciere.mp4"},
+    {name: "Macchinario gambe", series: 3, reps: "10-12", tempo: "2-1-3", rest: 60, video: "https://raw.githubusercontent.com/Gabry4421/palestra/main/gifs/MacchinarioGambe.mp4"},
+    {name: "Calf raise", series: 3, reps: "15-20", tempo: "2-1-3", rest: 60, video: "https://raw.githubusercontent.com/Gabry4421/palestra/main/gifs/CalfRaise.mp4"}
   ],
   4: [
     {name: "Shoulder press manubri", series: 3, reps: "8-12", tempo: "2-1-3", rest: 90},
