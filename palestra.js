@@ -238,6 +238,8 @@ function loadDay(day){
       const kgInput = document.createElement("input");
       kgInput.className = "kg-input";
       kgInput.placeholder="0";
+      kgInput.id = `kg_day_${day}_ex_${idx}_series_${i}`;
+      kgInput.name = `kg_day_${day}_ex_${idx}_series_${i}`;
       
       const isTimeExercise = ["Plank", "Side Plank"].includes(ex.name);
       
@@ -549,6 +551,8 @@ function loadDay(day){
         const kgInput = document.createElement("input");
         kgInput.className = "kg-input";
         kgInput.placeholder="0";
+        kgInput.id = `kg_abs_day_${day}_ex_${absIdx}_series_${i}`;
+        kgInput.name = `kg_abs_day_${day}_ex_${absIdx}_series_${i}`;
         
         const isTimeExercise = ["Plank", "Side Plank"].includes(ex.name);
         // declare these here to avoid ReferenceError if referenced elsewhere
