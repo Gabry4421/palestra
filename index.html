@@ -3,6 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self';
+               script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.youtube.com https://s.ytimg.com https://www.googleapis.com;
+               frame-src https://www.youtube.com;
+               connect-src https://www.googleapis.com;
+               img-src * data: blob:;
+               media-src * blob:;
+               style-src 'self' 'unsafe-inline';">
 <title>Scheda Allenamento + Miniplayer</title>
 
 <!-- CSS con versioning automatico -->
