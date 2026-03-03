@@ -534,7 +534,16 @@ function loadDay(day){
         kgInput.placeholder="0";
         
         const isTimeExercise = ["Plank", "Side Plank"].includes(ex.name);
-        
+        // declare these here to avoid ReferenceError if referenced elsewhere
+        let playBtnAbs = null;
+        let countdownSpanAbs = null;
+        let timeIntervalIdAbs = null;
+        let formatTimeAbs = (t) => {
+          const m = Math.floor(t/60).toString().padStart(2,'0');
+          const s = (t%60).toString().padStart(2,'0');
+          return `${m}:${s}`;
+        };
+
         if(isTimeExercise) {
           // usa tastiera numerica sui dispositivi mobili
           kgInput.type = "tel";
