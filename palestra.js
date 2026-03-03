@@ -2,12 +2,12 @@
 // --- DATI ESERCIZI 5 GIORNI ---
 const exercisesData = {
   1: [
-    {name: "Panca piana bilanciere", series: 3, reps: "8-12", tempo: "2-1-3", rest: 90, video: "https://raw.githubusercontent.com/Gabry4421/palestra/main/gifs/Panca%20piana%20bilanciere.mp4"},
-    {name: "Panca inclinata manubri", series: 3, reps: "8-12", tempo: "2-1-3", rest: 90, video: "https://raw.githubusercontent.com/Gabry4421/palestra/main/gifs/Panca%20inclinata%20manubri.mp4"},
-    {name: "Croci su panca", series: 2, reps: "10-12", tempo: "2-1-3", rest: 60, video: "https://raw.githubusercontent.com/Gabry4421/palestra/main/gifs/Croci%20su%20panca.mp4"},
-    {name: "Panca manubri presa neutra", series: 3, reps: "8-10", tempo: "2-1-3", rest: 90, video: "https://raw.githubusercontent.com/Gabry4421/palestra/main/gifs/Panca%20manubri%20presa%20neutra.mp4"},
-    {name: "French press manubri", series: 2, reps: "10-12", tempo: "2-1-3", rest: 60, video: "https://raw.githubusercontent.com/Gabry4421/palestra/main/gifs/French%20press%20manubri.mp4"},
-    {name: "Estensioni sopra testa manubri", series: 2, reps: "10-12", tempo: "2-1-3", rest: 60, video: "https://raw.githubusercontent.com/Gabry4421/palestra/main/gifs/Estensioni%20sopra%20testa%20manubri.mp4"}
+    {name: "Panca piana bilanciere", series: 3, reps: "8-12", tempo: "2-1-3", rest: 90, video: "https://raw.githubusercontent.com/Gabry4421/palestra/main/gifs/PancaPianaBilanciere.mp4"},
+    {name: "Panca inclinata manubri", series: 3, reps: "8-12", tempo: "2-1-3", rest: 90, video: "https://raw.githubusercontent.com/Gabry4421/palestra/main/gifs/PancaInclinataManubri.mp4"},
+    {name: "Croci su panca", series: 2, reps: "10-12", tempo: "2-1-3", rest: 60, video: "https://raw.githubusercontent.com/Gabry4421/palestra/main/gifs/CrociSuPanca.mp4"},
+    {name: "Panca manubri presa neutra", series: 3, reps: "8-10", tempo: "2-1-3", rest: 90, video: "https://raw.githubusercontent.com/Gabry4421/palestra/main/gifs/PancaManubriPresaNeutra.mp4"},
+    {name: "French press manubri", series: 2, reps: "10-12", tempo: "2-1-3", rest: 60, video: "https://raw.githubusercontent.com/Gabry4421/palestra/main/gifs/FrenchPressManubri.mp4"},
+    {name: "Estensioni sopra testa manubri", series: 2, reps: "10-12", tempo: "2-1-3", rest: 60, video: "https://raw.githubusercontent.com/Gabry4421/palestra/main/gifs/EstensioniSopraTestaManubri.mp4"}
   ],
   2: [
     {name: "Rematore bilanciere", series: 3, reps: "8-12", tempo: "2-1-3", rest: 90, video: "https://raw.githubusercontent.com/Gabry4421/palestra/main/gifs/Rematore%20bilanciere.mp4"},
