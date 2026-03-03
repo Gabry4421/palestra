@@ -553,15 +553,15 @@ function loadDay(day){
           kgInput.maxLength = 5;
           if(absKgData[`${absIdx}_${i}`]) kgInput.value = absKgData[`${absIdx}_${i}`];
           // create play button and countdown display for time exercises (abs)
-          const playBtnAbs = document.createElement('button');
+          playBtnAbs = document.createElement('button');
           playBtnAbs.className = 'time-play-btn';
           playBtnAbs.textContent = '▶️';
           playBtnAbs.title = 'Avvia conto alla rovescia';
-          const countdownSpanAbs = document.createElement('span');
+          countdownSpanAbs = document.createElement('span');
           countdownSpanAbs.className = 'time-countdown';
           countdownSpanAbs.style.marginLeft = '8px';
 
-          let timeIntervalIdAbs = null;
+          timeIntervalIdAbs = null;
           playBtnAbs.addEventListener('click', ()=>{
             let raw = kgInput.value || '';
             raw = raw.replace(/[^0-9:]/g, '');
@@ -631,11 +631,7 @@ function loadDay(day){
             }
           } catch(e){}
 
-          function formatTimeAbs(t){
-            const m = Math.floor(t/60).toString().padStart(2,'0');
-            const s = (t%60).toString().padStart(2,'0');
-            return `${m}:${s}`;
-          }
+          // use outer scope formatTimeAbs
         } else {
           kgInput.type="number";
           if(absKgData[`${absIdx}_${i}`]) kgInput.value = absKgData[`${absIdx}_${i}`];
