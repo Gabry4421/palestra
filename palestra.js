@@ -11,11 +11,11 @@ const exercisesData = {
   ],
   2: [
     {name: "Rematore bilanciere", series: 3, reps: "8-12", tempo: "2-1-3", rest: 90, video: "https://raw.githubusercontent.com/Gabry4421/palestra/main/gifs/Rematore%20bilanciere.mp4"},
-    {name: "Rematore 1 braccio manubrio", series: 3, reps: "10 per lato", tempo: "2-1-3", rest: 60},
-    {name: "Pullover manubrio", series: 2, reps: "10-12", tempo: "2-1-3", rest: 60},
-    {name: "Hammer curl", series: 3, reps: "8-12", tempo: "2-1-3", rest: 60},
-    {name: "Curl concentrato manubri", series: 2, reps: "10 per lato", tempo: "2-1-3", rest: 60},
-    {name: "Curl inclinato presa neutra", series: 2, reps: "10", tempo: "2-1-3", rest: 60}
+    {name: "Rematore 1 braccio manubrio", series: 3, reps: "10 per lato", tempo: "2-1-3", rest: 60, video: "https://raw.githubusercontent.com/Gabry4421/palestra/main/gifs/Rematore1BraccioManubrio.mp4"},
+    {name: "Pullover manubrio", series: 2, reps: "10-12", tempo: "2-1-3", rest: 60, video: "https://raw.githubusercontent.com/Gabry4421/palestra/main/gifs/PulloverManubrio.mp4"},
+    {name: "Hammer curl", series: 3, reps: "8-12", tempo: "2-1-3", rest: 60, video: "https://raw.githubusercontent.com/Gabry4421/palestra/main/gifs/HammerCurl.mp4"},
+    {name: "Curl concentrato manubri", series: 2, reps: "10 per lato", tempo: "2-1-3", rest: 60, video: "https://raw.githubusercontent.com/Gabry4421/palestra/main/gifs/CurlConcentratoManubri.mp4"},
+    {name: "Curl inclinato presa neutra", series: 2, reps: "10", tempo: "2-1-3", rest: 60, video: "https://raw.githubusercontent.com/Gabry4421/palestra/main/gifs/CurlInclinatoPresaNeutra.mp4"}
   ],
   3: [
     {name: "Squat bilanciere", series: 3, reps: "10-12", tempo: "2-1-3", rest: 120},
