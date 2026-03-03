@@ -218,12 +218,104 @@ function loadDay(day){
         kgInput.placeholder = "00:00";
         kgInput.maxLength = 5;
         if(kgData[`${idx}_${i}`]) kgInput.value = kgData[`${idx}_${i}`];
+        // create play button and countdown display for time exercises
+        const playBtn = document.createElement('button');
+        playBtn.className = 'time-play-btn';
+        playBtn.textContent = '▶️';
+        playBtn.title = 'Avvia conto alla rovescia';
+        const countdownSpan = document.createElement('span');
+        countdownSpan.className = 'time-countdown';
+        countdownSpan.style.marginLeft = '8px';
+
+        // attach play behavior
+        let timeIntervalId = null;
+        playBtn.addEventListener('click', ()=>{
+          // parse mm:ss or minutes
+          let raw = kgInput.value || '';
+          raw = raw.replace(/[^0-9:]/g, '');
+          let mins = 0, secs = 0;
+          if(raw.includes(':')){
+            const parts = raw.split(':');
+            mins = parseInt(parts[0]) || 0;
+            secs = parseInt(parts[1]) || 0;
+          } else if(raw.length>0){
+            mins = parseInt(raw) || 0;
+          }
+          let total = mins * 60 + secs;
+          if(total <= 0) return;
+
+          // disable editing while running
+          kgInput.disabled = true;
+          playBtn.disabled = true;
+          playBtn.textContent = '⏳';
+          countdownSpan.textContent = formatTime(total);
+
+          // persist countdown state (end timestamp)
+          const timeKey = `time_counter_${day}_${idx}_${i}`;
+          const endTs = Date.now() + total * 1000;
+          localStorage.setItem(timeKey, JSON.stringify({ end: endTs }));
+
+          // tick
+          timeIntervalId = setInterval(()=>{
+            total -= 1;
+            if(total <= 0){
+              clearInterval(timeIntervalId);
+              countdownSpan.textContent = '00:00';
+              // mark series completed by calling startSeries on the corresponding button
+              try{ startSeries(btn); } catch(e){}
+              // restore UI state
+              kgInput.disabled = false;
+              playBtn.disabled = false;
+              playBtn.textContent = '▶️';
+              // clear persisted state
+              try{ localStorage.removeItem(timeKey); } catch(e){}
+              return;
+            }
+            countdownSpan.textContent = formatTime(total);
+          }, 1000);
+        });
+
+        // restore countdown if present in localStorage
+        try{
+          const timeKeyR = `time_counter_${day}_${idx}_${i}`;
+          const stored = JSON.parse(localStorage.getItem(timeKeyR) || 'null');
+          if(stored && stored.end && stored.end > Date.now()){
+            // compute remaining
+            let remaining = Math.ceil((stored.end - Date.now())/1000);
+            // disable inputs and start visual countdown
+            kgInput.disabled = true;
+            playBtn.disabled = true;
+            playBtn.textContent = '⏳';
+            countdownSpan.textContent = formatTime(remaining);
+            const resumeInterval = setInterval(()=>{
+              remaining -= 1;
+              if(remaining <= 0){
+                clearInterval(resumeInterval);
+                countdownSpan.textContent = '00:00';
+                try{ startSeries(btn); } catch(e){}
+                kgInput.disabled = false;
+                playBtn.disabled = false;
+                playBtn.textContent = '▶️';
+                try{ localStorage.removeItem(timeKeyR); } catch(e){}
+                return;
+              }
+              countdownSpan.textContent = formatTime(remaining);
+            }, 1000);
+          }
+        } catch(e){}
+
         kgInput.addEventListener("input", (e)=>{
           let val = e.target.value.replace(/[^0-9]/g, "");
           if(val.length > 4) val = val.slice(0, 4);
           if(val.length > 2) val = val.slice(0, 2) + ":" + val.slice(2);
           e.target.value = val;
         });
+        
+        function formatTime(t){
+          const m = Math.floor(t/60).toString().padStart(2,'0');
+          const s = (t%60).toString().padStart(2,'0');
+          return `${m}:${s}`;
+        }
       } else {
         kgInput.type="number";
         if(kgData[`${idx}_${i}`]) kgInput.value = kgData[`${idx}_${i}`];
@@ -240,6 +332,7 @@ function loadDay(day){
 
       rowDiv.appendChild(btn);
       rowDiv.appendChild(kgInput);
+      if(isTimeExercise){ rowDiv.appendChild(playBtn); rowDiv.appendChild(countdownSpan); }
       rowDiv.appendChild(kgLabel);
       seriesDiv.appendChild(rowDiv);
     }
@@ -436,12 +529,90 @@ function loadDay(day){
           kgInput.placeholder = "00:00";
           kgInput.maxLength = 5;
           if(absKgData[`${absIdx}_${i}`]) kgInput.value = absKgData[`${absIdx}_${i}`];
+          // create play button and countdown display for time exercises (abs)
+          const playBtnAbs = document.createElement('button');
+          playBtnAbs.className = 'time-play-btn';
+          playBtnAbs.textContent = '▶️';
+          playBtnAbs.title = 'Avvia conto alla rovescia';
+          const countdownSpanAbs = document.createElement('span');
+          countdownSpanAbs.className = 'time-countdown';
+          countdownSpanAbs.style.marginLeft = '8px';
+
+          let timeIntervalIdAbs = null;
+          playBtnAbs.addEventListener('click', ()=>{
+            let raw = kgInput.value || '';
+            raw = raw.replace(/[^0-9:]/g, '');
+            let mins = 0, secs = 0;
+            if(raw.includes(':')){
+              const parts = raw.split(':');
+              mins = parseInt(parts[0]) || 0;
+              secs = parseInt(parts[1]) || 0;
+            } else if(raw.length>0){
+              mins = parseInt(raw) || 0;
+            }
+            let total = mins * 60 + secs;
+            if(total <= 0) return;
+
+            kgInput.disabled = true;
+            playBtnAbs.disabled = true;
+            playBtnAbs.textContent = '⏳';
+            countdownSpanAbs.textContent = formatTimeAbs(total);
+
+            timeIntervalIdAbs = setInterval(()=>{
+              total -= 1;
+              if(total <= 0){
+                clearInterval(timeIntervalIdAbs);
+                countdownSpanAbs.textContent = '00:00';
+                try{ startSeries(btn); } catch(e){}
+                kgInput.disabled = false;
+                playBtnAbs.disabled = false;
+                playBtnAbs.textContent = '▶️';
+                try{ localStorage.removeItem(`time_counter_${day}_abs_${absIdx}_${i}`); } catch(e){}
+                return;
+              }
+              countdownSpanAbs.textContent = formatTimeAbs(total);
+            }, 1000);
+          });
+
           kgInput.addEventListener("input", (e)=>{
             let val = e.target.value.replace(/[^0-9]/g, "");
             if(val.length > 4) val = val.slice(0, 4);
             if(val.length > 2) val = val.slice(0, 2) + ":" + val.slice(2);
             e.target.value = val;
           });
+
+          // restore countdown for abs if present
+          try{
+            const timeKeyRAbs = `time_counter_${day}_abs_${absIdx}_${i}`;
+            const storedAbs = JSON.parse(localStorage.getItem(timeKeyRAbs) || 'null');
+            if(storedAbs && storedAbs.end && storedAbs.end > Date.now()){
+              let remaining = Math.ceil((storedAbs.end - Date.now())/1000);
+              kgInput.disabled = true;
+              playBtnAbs.disabled = true;
+              playBtnAbs.textContent = '⏳';
+              countdownSpanAbs.textContent = formatTimeAbs(remaining);
+              const resumeAbs = setInterval(()=>{
+                remaining -= 1;
+                if(remaining <= 0){
+                  clearInterval(resumeAbs);
+                  countdownSpanAbs.textContent = '00:00';
+                  try{ startSeries(btn); } catch(e){}
+                  kgInput.disabled = false;
+                  playBtnAbs.disabled = false;
+                  playBtnAbs.textContent = '▶️';
+                  try{ localStorage.removeItem(timeKeyRAbs); } catch(e){}
+                  return;
+                }
+                countdownSpanAbs.textContent = formatTimeAbs(remaining);
+              }, 1000);
+            }
+          } catch(e){}
+
+          function formatTimeAbs(t){
+            const m = Math.floor(t/60).toString().padStart(2,'0');
+            const s = (t%60).toString().padStart(2,'0');
+            return `${m}:${s}`;
+          }
         } else {
           kgInput.type="number";
           if(absKgData[`${absIdx}_${i}`]) kgInput.value = absKgData[`${absIdx}_${i}`];
@@ -458,6 +629,7 @@ function loadDay(day){
 
         rowDiv.appendChild(btn);
         rowDiv.appendChild(kgInput);
+        if(isTimeExercise){ rowDiv.appendChild(playBtnAbs); rowDiv.appendChild(countdownSpanAbs); }
         rowDiv.appendChild(kgLabel);
         seriesDiv.appendChild(rowDiv);
       }
