@@ -93,6 +93,23 @@ if(localStorage.getItem("miniPlayerMini") === "true") {
     miniControls.style.display = "flex";
 }
 
+// inject minimal CSS for time controls and layout
+(function(){
+  const css = `
+  .series-container > div { display: flex; align-items: center; gap: 8px; margin: 6px 0; }
+  .kg-input { width: 80px; }
+  .kg-label { margin-left: 4px; font-weight: 600; }
+  .time-play-btn { background: #2b6cb0; color: white; border: none; padding: 6px 8px; border-radius: 6px; cursor: pointer; font-size: 14px; }
+  .time-play-btn:disabled { opacity: 0.6; cursor: default; }
+  .time-countdown { font-family: monospace; margin-left: 6px; min-width: 48px; text-align: center; }
+  /* ensure play button appears to the right of the label */
+  .kg-label { order: 2; }
+  .time-play-btn { order: 3; margin-left: 6px; }
+  .time-countdown { order: 4; }
+  `;
+  const s = document.createElement('style'); s.innerHTML = css; document.head.appendChild(s);
+})();
+
 // --- TIMER PERSISTENTI ---
 // mappa dei timer salvati (end timestamp in ms)
 let activeTimers = JSON.parse(localStorage.getItem('active_timers') || '{}');
