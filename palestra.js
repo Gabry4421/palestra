@@ -112,12 +112,26 @@ function clearAllIntervals() {
 document.querySelectorAll(".day-card").forEach(card=>{
   card.addEventListener("click",()=>{
     const day = card.dataset.day;
-    loadDay(day);
+    try {
+      loadDay(day);
+    } catch (e) {
+      console.error('Error in loadDay:', e);
+      try{ localStorage.setItem('last_js_error', e && e.stack ? e.stack : String(e)); } catch(_){}
+    }
     daysSection.classList.remove("active");
     exercisesSection.classList.add("active");
     history.pushState({day},`Giorno ${day}`,`#giorno${day}`);
   });
 });
+
+// global error handler to capture uncaught exceptions for debugging
+window.onerror = function(message, source, lineno, colno, error) {
+  try{
+    const info = { message, source, lineno, colno, stack: error && error.stack };
+    console.error('Global error captured', info);
+    localStorage.setItem('last_js_error', JSON.stringify(info));
+  } catch(e){}
+};
 
 // --- BACK BUTTON ---
 backBtn.addEventListener("click",()=>{
